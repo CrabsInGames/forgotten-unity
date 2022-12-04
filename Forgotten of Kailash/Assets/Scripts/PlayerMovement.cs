@@ -19,22 +19,25 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Camera FPCamera;
     float VCamT;
     [SerializeField] Transform[] cameraExtremes;
+    [SerializeField] Light light;
 
     [Header("pick ups")]
+    [SerializeField] float smoothTime = 0.1f;
     [SerializeField] Transform holdPositioner;
     Rigidbody holdBody;
-    bool HoldBodyAssigned { get => holdBody; }
+    bool isHolding;
     [SerializeField] float pickupMaxDistance;
     [SerializeField] LayerMask pickupLayerMask;
     int pickupLayer;
     int holdLayer;
 
+    public GameObject grabUI;
 
     private void Awake()
     {
         inputActions = new PlayerControls();
         inputActions.Player.PickUp.started += ctx => StartHold();
-        inputActions.Player.PickUp.canceled += ctx => EndHold();
+        inputActions.Player.PickUp.canceled += ctx => EndHold(false);
     }
     private void OnEnable()
     {
@@ -60,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        switch (HoldBodyAssigned)
+        switch (isHolding && (bool)holdBody)
         {
             case true:
                 MoveHoldBody();
@@ -69,8 +72,8 @@ public class PlayerMovement : MonoBehaviour
     }
     void MoveHoldBody()
     {
-        holdBody.MovePosition(holdPositioner.position);
-        //holdBody.MoveRotation(holdPositioner.rotation);
+        Vector3 refVelocity = Vector3.zero;
+        holdBody.MovePosition(Vector3.SmoothDamp(holdBody.transform.position, holdPositioner.position, ref refVelocity, smoothTime));        
     }
 
     void Update()
@@ -78,6 +81,41 @@ public class PlayerMovement : MonoBehaviour
         SideRotation();
         CamVRotation();
         Walk();
+        if (!isHolding)
+            RayCheck();
+    }
+    void RayCheck()
+    {
+        Ray ray = FPCamera.ViewportPointToRay(Vector2.one * 0.5f);
+        bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, pickupMaxDistance, pickupLayerMask);
+        switch (hit)
+        {
+            case true:
+                //light.transform.LookAt(hitInfo.point);
+                holdBody = hitInfo.rigidbody;
+                switch ((bool)holdBody)
+                {
+                    case true:
+                        Debug.Log("looking at " + holdBody);
+                        grabUI.SetActive(true);
+                        switch (hitInfo.collider.CompareTag("Note"))
+                        {
+                            case true:
+                                Debug.Log(hitInfo.collider.name + " note found");
+                                grabUI.SetActive(true);
+                                break;
+                        }
+                        return;
+                    case false:
+                        holdBody = null;
+                        break;
+                }
+                break;
+            case false:
+                holdBody = null;
+                break;
+        }
+        grabUI.SetActive(false);
     }
     void SideRotation()
     {
@@ -99,39 +137,33 @@ public class PlayerMovement : MonoBehaviour
 
     void StartHold()
     {
-        Ray ray = FPCamera.ViewportPointToRay(Vector2.one * 0.5f);
-        bool hit = Physics.Raycast(ray, out RaycastHit hitInfo, pickupMaxDistance, pickupLayerMask);
-        switch (hit)
+        switch ((bool)holdBody)
         {
             case true:
-                holdBody = hitInfo.rigidbody;
-                Debug.Log("now holding " + holdBody);
-                switch (HoldBodyAssigned)
-                {
-                    case true:
-                        holdBody.gameObject.layer = holdLayer;
-                        holdBody.isKinematic = false;
-                        holdBody.useGravity = false;
-                        holdPositioner.position = holdBody.position;
-                        holdPositioner.rotation = holdBody.rotation;
-                        break;
-                }
+                holdBody.gameObject.layer = holdLayer;
+                holdBody.useGravity = false;
+                holdBody.isKinematic = true;
+                //holdPositioner.position = holdBody.position;
+                //holdPositioner.rotation = holdBody.rotation;
+                isHolding = true;
+
+                grabUI.SetActive(false);
                 break;
             case false:
                 Debug.Log("nothing to grab");
                 break;
         }
     }
-    public void EndHold()
+    public void EndHold(bool makeKinematic)
     {
-        switch (HoldBodyAssigned)
+        if (isHolding && (bool)holdBody)
         {
-            case true:
                 holdBody.gameObject.layer = pickupLayer;
                 holdBody.useGravity = true;
+                holdBody.isKinematic = makeKinematic;
                 Debug.Log(holdBody + " released");
                 holdBody = null;
-                break;
+                isHolding = false;
         }
     }
 
@@ -141,5 +173,16 @@ public class PlayerMovement : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position + downOffset, characterController.radius);
         Vector3 upOffset = Vector3.up * (characterController.height - characterController.radius);
         Gizmos.DrawWireSphere(transform.position + upOffset, characterController.radius);
+
+        switch (isHolding)
+        { 
+            case true:
+                Gizmos.color = Color.red;
+                break;
+            case false:
+                Gizmos.color = Color.blue;
+                break;
+        }
+        Gizmos.DrawWireSphere(holdPositioner.position, 0.1f);
     }
 }

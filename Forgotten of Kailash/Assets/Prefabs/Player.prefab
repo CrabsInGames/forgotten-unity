@@ -80,17 +80,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterController: {fileID: 2015638198301834474}
-  walkSpeed: 2
+  walkSpeed: 3
   lookSpeed: {x: 10, y: 0.5}
   FPCamera: {fileID: 0}
   cameraExtremes:
   - {fileID: 2015638198947423818}
   - {fileID: 2015638198129687636}
+  light: {fileID: 7056249629302095301}
+  smoothTime: 0.03
   holdPositioner: {fileID: 2015638198409115639}
-  pickupMaxDistance: 3
+  pickupMaxDistance: 2
   pickupLayerMask:
     serializedVersion: 2
     m_Bits: 384
+  grabUI: {fileID: 0}
 --- !u!143 &2015638198301834474
 CharacterController:
   m_ObjectHideFlags: 0
@@ -133,7 +136,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2015638198409115640}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.05}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

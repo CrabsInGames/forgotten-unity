@@ -1,19 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PickupSlot : MonoBehaviour
 {
-    Rigidbody snapped;
+    [SerializeField] float snapTime;
+    public Rigidbody desiredObject;
+    [SerializeField] Rigidbody snapped;
     int holdLayer;
+    [SerializeField] Mesh previewMesh;
     //[SerializeField] LayerMask holdLayer;
     //[SerializeField] LayerMask pickupLayer;
-    [SerializeField] float snapTime;
 
     private void Start()
     {
         holdLayer = LayerMask.NameToLayer("Hold");
     }
+
+    public UnityEvent OnSnap;
+    public UnityEvent OnDrop;
+    public UnityEvent OnDesiredSnap;
+    public UnityEvent OnDesiredDrop;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -26,19 +34,34 @@ public class PickupSlot : MonoBehaviour
             return;
 
         Debug.Log(otherRB + " layer is " + LayerMask.LayerToName(otherRB.gameObject.layer));
-        if (otherRB.gameObject.layer == holdLayer)
+        switch (otherRB.gameObject.layer == holdLayer)
         {
-            Debug.Log("drop " + otherRB);
-            PlayerMovement.active.EndHold();
-            StartCoroutine(SnapPositionCor(otherRB));
-            snapped = otherRB;
+            case true:
+                Debug.Log("drop " + otherRB);
+                PlayerMovement.active.EndHold(true);
+                StartCoroutine(SnapPositionCor(otherRB));
+                snapped = otherRB;
+                OnSnap.Invoke();
+                switch (snapped == desiredObject)
+                {
+                    case true:
+                        OnDesiredSnap.Invoke();
+                        break;
+                }
+                break;
         }
     }
-
     private void OnTriggerExit(Collider other)
     {
         if (other.attachedRigidbody == snapped)
+        {
+            if (other.attachedRigidbody == desiredObject)
+                OnDesiredDrop.Invoke();
+
+            snapped.transform.SetParent(null);
             snapped = null;
+            OnDrop.Invoke();
+        }
     }
 
     IEnumerator SnapPositionCor(Rigidbody rb)
@@ -54,6 +77,7 @@ public class PickupSlot : MonoBehaviour
             rb.transform.rotation = Quaternion.Lerp(startRot, transform.rotation, t);
             yield return null;
         }
+        rb.transform.SetParent(transform);
     }
 
     private void OnDrawGizmos()
@@ -67,6 +91,6 @@ public class PickupSlot : MonoBehaviour
                 Gizmos.color = Color.red;
                 break;
         }
-        Gizmos.DrawWireCube(transform.position, Vector3.one);
+        Gizmos.DrawWireMesh(previewMesh, transform.position, transform.rotation);
     }
 }
