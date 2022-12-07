@@ -16,6 +16,26 @@ public class PickupSlot : MonoBehaviour
     private void Start()
     {
         holdLayer = LayerMask.NameToLayer("Hold");
+
+        if (snapped)
+        {
+            snapped.isKinematic = true;
+            snapped.transform.SetParent(transform);
+            OnSnap.Invoke();
+            switch (snapped == desiredObject)
+            {
+                case true:
+                    OnDesiredSnap.Invoke();
+                    Glyph glyph = snapped.GetComponent<Glyph>();
+                    switch ((bool)glyph)
+                    {
+                        case true:
+                            glyph.HighlightRight();
+                            break;
+                    }
+                    break;
+            }
+        }
     }
 
     public UnityEvent OnSnap;
@@ -46,6 +66,13 @@ public class PickupSlot : MonoBehaviour
                 {
                     case true:
                         OnDesiredSnap.Invoke();
+                        Glyph glyph = snapped.GetComponent<Glyph>();
+                        switch((bool)glyph)
+                        {
+                            case true:
+                                glyph.HighlightRight();
+                                break;
+                        }
                         break;
                 }
                 break;
@@ -56,7 +83,12 @@ public class PickupSlot : MonoBehaviour
         if (other.attachedRigidbody == snapped)
         {
             if (other.attachedRigidbody == desiredObject)
+            {
                 OnDesiredDrop.Invoke();
+                Glyph glyph = other.attachedRigidbody.GetComponent<Glyph>();
+                if (glyph)
+                    glyph.HighlightReset();
+            }
 
             snapped.transform.SetParent(null);
             snapped = null;

@@ -17,9 +17,9 @@ public class PlayerMovement : MonoBehaviour
     
     [Header("First Person Camera")]
     [SerializeField] Camera FPCamera;
-    float VCamT;
+    [SerializeField] float VCamT;
     [SerializeField] Transform[] cameraExtremes;
-    [SerializeField] Light light;
+    //[SerializeField] Light light;
 
     [Header("pick ups")]
     [SerializeField] float smoothTime = 0.1f;
@@ -31,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     int pickupLayer;
     int holdLayer;
 
+    [Header("UI")]
     public GameObject grabUI;
 
     private void Awake()
@@ -38,6 +39,8 @@ public class PlayerMovement : MonoBehaviour
         inputActions = new PlayerControls();
         inputActions.Player.PickUp.started += ctx => StartHold();
         inputActions.Player.PickUp.canceled += ctx => EndHold(false);
+        inputActions.Player.PauseMenu.started += ctx => OpenMenu();
+        inputActions.Player.Journal.started += ctx => OpenJournal();
     }
     private void OnEnable()
     {
@@ -130,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Walk()
     {
-        Vector3 walkLocal = new Vector3(walkInput.x, 0, walkInput.y) * walkSpeed;
+        Vector3 walkLocal = new Vector3(walkInput.x, -transform.position.y, walkInput.y) * walkSpeed;
         Vector3 walkWorld = transform.TransformDirection(walkLocal);
         characterController.Move(walkWorld * Time.deltaTime);
     }
@@ -140,13 +143,22 @@ public class PlayerMovement : MonoBehaviour
         switch ((bool)holdBody)
         {
             case true:
-                holdBody.gameObject.layer = holdLayer;
-                holdBody.useGravity = false;
-                holdBody.isKinematic = true;
-                //holdPositioner.position = holdBody.position;
-                //holdPositioner.rotation = holdBody.rotation;
-                isHolding = true;
-
+                switch (holdBody.gameObject.CompareTag("Note"))
+                {
+                    case false:
+                        holdBody.gameObject.layer = holdLayer;
+                        holdBody.useGravity = false;
+                        holdBody.isKinematic = true;
+                        //holdPositioner.position = holdBody.position;
+                        //holdPositioner.rotation = holdBody.rotation;
+                        isHolding = true;
+                        break;
+                    case true:
+                        NotePickup note = holdBody.GetComponent<NotePickup>();
+                        note.PickUp();
+                        MenuManager.active.OpenMenu(1);
+                        break;
+                }
                 grabUI.SetActive(false);
                 break;
             case false:
@@ -165,6 +177,17 @@ public class PlayerMovement : MonoBehaviour
                 holdBody = null;
                 isHolding = false;
         }
+    }
+
+    void OpenMenu()
+    {
+        if (MenuManager.active)
+            MenuManager.active.CloseOrOpen();
+    }
+    void OpenJournal()
+    {
+        if (MenuManager.active)
+            MenuManager.active.OpenMenu(1);
     }
 
     private void OnDrawGizmos()

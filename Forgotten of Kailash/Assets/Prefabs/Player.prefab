@@ -87,9 +87,9 @@ MonoBehaviour:
   - {fileID: 2015638198947423818}
   - {fileID: 2015638198129687636}
   light: {fileID: 7056249629302095301}
-  smoothTime: 0.03
+  smoothTime: 0.04
   holdPositioner: {fileID: 2015638198409115639}
-  pickupMaxDistance: 2
+  pickupMaxDistance: 2.5
   pickupLayerMask:
     serializedVersion: 2
     m_Bits: 384

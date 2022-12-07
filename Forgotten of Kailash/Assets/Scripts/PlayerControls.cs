@@ -53,6 +53,24 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PauseMenu"",
+                    ""type"": ""Button"",
+                    ""id"": ""816d03fa-1839-46c7-b37f-143147116b86"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Journal"",
+                    ""type"": ""Button"",
+                    ""id"": ""0fafa1fb-de7b-4eec-a1fb-5b7faa52cd53"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -116,7 +134,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""id"": ""83298160-a5ff-4500-b750-6592f9876672"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""NormalizeVector2"",
                     ""groups"": """",
                     ""action"": ""Look"",
                     ""isComposite"": false,
@@ -143,6 +161,28 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""PickUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6bff6506-b126-4e64-a098-ce0fa03fe186"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PauseMenu"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3d2f9568-2fa1-4110-a3f2-3558221ee4c9"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Journal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -154,6 +194,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Player_Walk = m_Player.FindAction("Walk", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_PickUp = m_Player.FindAction("PickUp", throwIfNotFound: true);
+        m_Player_PauseMenu = m_Player.FindAction("PauseMenu", throwIfNotFound: true);
+        m_Player_Journal = m_Player.FindAction("Journal", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -216,6 +258,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Walk;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_PickUp;
+    private readonly InputAction m_Player_PauseMenu;
+    private readonly InputAction m_Player_Journal;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -223,6 +267,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @Walk => m_Wrapper.m_Player_Walk;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @PickUp => m_Wrapper.m_Player_PickUp;
+        public InputAction @PauseMenu => m_Wrapper.m_Player_PauseMenu;
+        public InputAction @Journal => m_Wrapper.m_Player_Journal;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -241,6 +287,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @PickUp.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
                 @PickUp.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
                 @PickUp.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPickUp;
+                @PauseMenu.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPauseMenu;
+                @PauseMenu.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPauseMenu;
+                @PauseMenu.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnPauseMenu;
+                @Journal.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJournal;
+                @Journal.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJournal;
+                @Journal.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJournal;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -254,6 +306,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @PickUp.started += instance.OnPickUp;
                 @PickUp.performed += instance.OnPickUp;
                 @PickUp.canceled += instance.OnPickUp;
+                @PauseMenu.started += instance.OnPauseMenu;
+                @PauseMenu.performed += instance.OnPauseMenu;
+                @PauseMenu.canceled += instance.OnPauseMenu;
+                @Journal.started += instance.OnJournal;
+                @Journal.performed += instance.OnJournal;
+                @Journal.canceled += instance.OnJournal;
             }
         }
     }
@@ -263,5 +321,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnWalk(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnPickUp(InputAction.CallbackContext context);
+        void OnPauseMenu(InputAction.CallbackContext context);
+        void OnJournal(InputAction.CallbackContext context);
     }
 }
