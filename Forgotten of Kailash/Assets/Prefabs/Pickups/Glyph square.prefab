@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 4839222883895177655}
   m_Layer: 7
   m_Name: Glyph square
-  m_TagString: Untagged
+  m_TagString: Cube
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

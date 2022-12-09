@@ -23,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("pick ups")]
     [SerializeField] float smoothTime = 0.1f;
-    [SerializeField] Transform holdPositioner;
+    public Transform holdPositioner;
     Rigidbody holdBody;
     bool isHolding;
     [SerializeField] float pickupMaxDistance;
@@ -142,10 +142,13 @@ public class PlayerMovement : MonoBehaviour
     {
         switch ((bool)holdBody)
         {
+            case false:
+                Debug.Log("nothing to grab");
+                break;
             case true:
-                switch (holdBody.gameObject.CompareTag("Note"))
+                switch (holdBody.gameObject.tag)
                 {
-                    case false:
+                    case "Cube":
                         holdBody.gameObject.layer = holdLayer;
                         holdBody.useGravity = false;
                         holdBody.isKinematic = true;
@@ -153,29 +156,42 @@ public class PlayerMovement : MonoBehaviour
                         //holdPositioner.rotation = holdBody.rotation;
                         isHolding = true;
                         break;
-                    case true:
+                    case "Note":
                         NotePickup note = holdBody.GetComponent<NotePickup>();
                         note.PickUp();
                         MenuManager.active.OpenMenu(1);
                         break;
+                    case "Hand":
+                        ClockGrabber grabber = holdBody.GetComponent<ClockGrabber>();
+                        grabber.StartGrab();
+                        isHolding = true;
+                        break;
                 }
                 grabUI.SetActive(false);
-                break;
-            case false:
-                Debug.Log("nothing to grab");
                 break;
         }
     }
     public void EndHold(bool makeKinematic)
     {
-        if (isHolding && (bool)holdBody)
+        switch (isHolding && (bool)holdBody)
         {
-                holdBody.gameObject.layer = pickupLayer;
-                holdBody.useGravity = true;
-                holdBody.isKinematic = makeKinematic;
+            case true:
+                switch (holdBody.CompareTag("Hand"))
+                {
+                    case true:
+                        ClockGrabber grabber = holdBody.GetComponent<ClockGrabber>();
+                        grabber.EndGrab();
+                        break;
+                    case false:
+                        holdBody.gameObject.layer = pickupLayer;
+                        holdBody.useGravity = true;
+                        holdBody.isKinematic = makeKinematic;
+                        break;
+                }
                 Debug.Log(holdBody + " released");
                 holdBody = null;
                 isHolding = false;
+                break;
         }
     }
 

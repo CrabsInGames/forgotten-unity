@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Note
+  - Cube
+  - Hand
   layers:
   - Default
   - TransparentFX

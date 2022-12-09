@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2015638198129687636}
   m_Layer: 6
   m_Name: CamUp
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,9 +42,11 @@ GameObject:
   - component: {fileID: 2015638198301834473}
   - component: {fileID: 2015638198301834472}
   - component: {fileID: 2015638198301834474}
+  - component: {fileID: 861909460923831616}
+  - component: {fileID: 7331144763444151272}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -83,10 +85,10 @@ MonoBehaviour:
   walkSpeed: 3
   lookSpeed: {x: 10, y: 0.5}
   FPCamera: {fileID: 0}
+  VCamT: 0
   cameraExtremes:
   - {fileID: 2015638198947423818}
   - {fileID: 2015638198129687636}
-  light: {fileID: 7056249629302095301}
   smoothTime: 0.04
   holdPositioner: {fileID: 2015638198409115639}
   pickupMaxDistance: 2.5
@@ -112,6 +114,35 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!54 &861909460923831616
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015638198301834475}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!135 &7331144763444151272
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2015638198301834475}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Center: {x: 0, y: 1.5, z: 0}
 --- !u!1 &2015638198409115640
 GameObject:
   m_ObjectHideFlags: 0
@@ -123,7 +154,7 @@ GameObject:
   - component: {fileID: 2015638198409115639}
   m_Layer: 6
   m_Name: HoldPos
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,7 +185,7 @@ GameObject:
   - component: {fileID: 2015638198947423818}
   m_Layer: 6
   m_Name: CamDown
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -187,7 +218,7 @@ GameObject:
   - component: {fileID: 2015638199990075069}
   m_Layer: 6
   m_Name: FirstPerson Camera
-  m_TagString: MainCamera
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -272,7 +303,7 @@ GameObject:
   - component: {fileID: 7056249629302095301}
   m_Layer: 6
   m_Name: Spot Light
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

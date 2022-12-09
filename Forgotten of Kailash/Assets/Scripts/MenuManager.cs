@@ -5,17 +5,22 @@ using UnityEngine;
 public class MenuManager : MonoBehaviour
 {
     public static MenuManager active;
-    List<GameObject> open = new List<GameObject>();
+    [SerializeField] List<GameObject> open = new List<GameObject>();
     [SerializeField] public GameObject[] menus;
 
     private void Awake()
     {
         active = this;
     }
+    private void Start()
+    {
+        foreach (GameObject m in menus)
+            m.SetActive(false);
+    }
 
     public void OpenMenu(int index)
     {
-        if (open.Count <= 0)
+        if (open.Count == 0)
             Time.timeScale = 0;
 
         if (index < 0 || index >= menus.Length)
@@ -28,7 +33,7 @@ public class MenuManager : MonoBehaviour
         {
             menus[index].SetActive(false);
             open.Remove(menus[index]);
-            if (open.Count <= 0)
+            if (open.Count == 0)
                 Time.timeScale = 1;
         }
         else
@@ -42,7 +47,7 @@ public class MenuManager : MonoBehaviour
         GameObject currentMenu = open[open.Count - 1];
         currentMenu.SetActive(false);
         open.Remove(currentMenu);
-        if (open.Count >= 0)
+        if (open.Count == 0)
             Time.timeScale = 1;
     }
 

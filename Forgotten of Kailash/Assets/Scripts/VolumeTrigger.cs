@@ -4,11 +4,32 @@ using UnityEngine;
 
 public class VolumeTrigger : MonoBehaviour
 {
-    public UnityEngine.Events.UnityEvent onEnter;
+    public UnityEngine.Events.UnityEvent onPlayerEnter;
+    [SerializeField] bool moveRigidbodies;
+    [SerializeField] Vector3 rbVector;
     
     private void OnTriggerEnter(Collider other)
     {
-        onEnter.Invoke();
+        switch (other.gameObject.tag)
+        {
+            case "Cube":
+                switch (moveRigidbodies && !other.attachedRigidbody.isKinematic)
+                {
+                    case true:
+                        Rigidbody otherRB = other.attachedRigidbody;
+                        Debug.Log(name + " moving " + otherRB + " away");
+                        Vector3 startPos = otherRB.position;
+                        Vector3 moveWorld = transform.TransformDirection(rbVector);
+                        Vector3 endPos = startPos + moveWorld;
+                        otherRB.position = endPos;
+                        break;
+                }
+                break;
+            case "Player":
+                Debug.Log("player entered " + name);
+                onPlayerEnter.Invoke();
+                break;
+        }
     }
 
     public void MovePlayerBy(float z)
