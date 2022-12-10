@@ -9,10 +9,24 @@ public class Glyph : MonoBehaviour
     [SerializeField] Color rightCol;
     [SerializeField] Color wrongCol;
 
+    SpriteRenderer[] spriteRenderers;
+    Color baseSpriteCol;
+    [SerializeField] Color rightSpriteCol;
+
     private void Start()
     {
         rend = GetComponent<Renderer>();
         baseCol = rend.material.color;
+        spriteRenderers = transform.GetComponentsInChildren<SpriteRenderer>();
+        switch (spriteRenderers.Length > 0)
+        {
+            case true:
+                baseSpriteCol = spriteRenderers[0].color;
+                break;
+            case false:
+                Debug.Log(name + " has no sprite renderers");
+                break;
+        }
     }
 
     public void HighlightWrong()
@@ -23,9 +37,13 @@ public class Glyph : MonoBehaviour
     {
         if (!rend) return;
         rend.material.color = rightCol;
+        foreach (SpriteRenderer s in spriteRenderers)
+            s.color = rightSpriteCol;
     }
     public void HighlightReset()
     {
         rend.material.color = baseCol;
+        foreach (SpriteRenderer s in spriteRenderers)
+            s.color = baseSpriteCol;
     }
 }

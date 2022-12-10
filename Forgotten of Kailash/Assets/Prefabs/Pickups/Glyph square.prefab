@@ -135,6 +135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rightCol: {r: 0.6745098, g: 1, b: 0.7568628, a: 1}
   wrongCol: {r: 1, g: 0.2352941, b: 0.2352941, a: 1}
+  rightSpriteCol: {r: 1, g: 1, b: 1, a: 1}
 --- !u!33 &4839222883895177653
 MeshFilter:
   m_ObjectHideFlags: 0

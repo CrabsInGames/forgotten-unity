@@ -13,7 +13,7 @@ public class PickupSlot : MonoBehaviour
     //[SerializeField] LayerMask holdLayer;
     //[SerializeField] LayerMask pickupLayer;
 
-    private void Start()
+    void Start()
     {
         holdLayer = LayerMask.NameToLayer("Hold");
 
@@ -21,6 +21,7 @@ public class PickupSlot : MonoBehaviour
         {
             snapped.isKinematic = true;
             snapped.transform.SetParent(transform);
+            snapped.transform.localPosition = Vector3.zero;
             OnSnap.Invoke();
             switch (snapped == desiredObject)
             {
@@ -30,7 +31,11 @@ public class PickupSlot : MonoBehaviour
                     switch ((bool)glyph)
                     {
                         case true:
+                            Debug.Log(glyph + " successfully snaped to " + name);
                             glyph.HighlightRight();
+                            break;
+                        case false:
+                            Debug.Log(snapped + " is missing glyph component");
                             break;
                     }
                     break;
