@@ -50,12 +50,20 @@ public class MenuManager : MonoBehaviour
         if (open.Count == 0)
             Time.timeScale = 1;
     }
-
     public void CloseOrOpen()
     {
         if (open.Count > 0)
             CloseMenu();
         else
             OpenMenu(0);
+    }
+
+    public void ChangeScene(int index)
+    {
+        //load scene by index
+    }
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
