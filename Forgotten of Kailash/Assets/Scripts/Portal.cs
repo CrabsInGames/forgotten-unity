@@ -1,24 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Portal : MonoBehaviour
 {
-    public int tentacles;
-    [SerializeField] int maxTentacles;
     [Range(0, 1)] public int redness;
     [SerializeField] float maxRednessSize;
-    [SerializeField] Animator animator;
     [SerializeField] Transform[] pillars;
     [SerializeField] float pillarRaiseTime = 1;
     int activePillarCount = 0;
     [SerializeField] GameObject redVFX;
 
+    [SerializeField] float puzzleTimeLimit;
+    float tentacleTime;
+    [SerializeField] Animator[] tentacles;
+    List<Animator> tentaclesIn;
+    List<Animator> tentaclesOut;
+    int a_out = Animator.StringToHash("Out");
+    public UnityEvent AllOut;
+
     void Start()
     {
-        if (!animator)
-            animator = GetComponent<Animator>();
         UpdateRedness();
+        tentaclesIn = new List<Animator>();
+        tentaclesIn.AddRange(tentacles);
+        tentaclesOut = new List<Animator>();
+        tentacleTime = puzzleTimeLimit / (tentacles.Length + 1);
+        Debug.Log("tentacles appear every " + tentacleTime + " seconds");
     }
 
     public void RaisePillar(int index)
@@ -51,5 +60,62 @@ public class Portal : MonoBehaviour
         float size = maxRednessSize * redness;
         Debug.Log("red vfx active " + redVFX.active + "; size is " + activePillarCount);
         redVFX.transform.localScale = activePillarCount * Vector3.one;
+    }
+
+    public void StartCountdown()
+    {
+        Debug.Log("Countdown started");
+        StartCoroutine(TentacleCor());
+    }
+    public void RandomTentacleOut()
+    {
+        if (tentaclesIn.Count <= 0)
+        {
+            Debug.Log("time is over");
+            StopCoroutine(TentacleCor());
+            AllOut.Invoke();
+        }    
+
+        int r = Random.Range(0, tentaclesIn.Count - 1);
+        Animator chosen = tentaclesIn[r];
+        Debug.Log(chosen + " chosen");
+        chosen.SetBool(a_out, true);
+
+        tentaclesIn.Remove(chosen);
+        string InMessage = "tentacles in: ";
+        foreach (Animator ten in tentaclesIn)
+        {
+            InMessage += ten.name + ", ";
+        }
+        Debug.Log(InMessage);
+
+        tentaclesOut.Add(chosen);
+        string OutMessage = "tentacles out: ";
+        foreach (Animator ten in tentaclesOut)
+        {
+            OutMessage += ten.name + ", ";
+        }
+        Debug.Log(OutMessage);
+        //Debug.Log(tentaclesOut.Count + " tentacles out");
+    }
+    public void HideAllTentacles()
+    {
+        StopCoroutine(TentacleCor());
+        tentaclesOut.Clear();
+        tentaclesIn.Clear();
+        tentaclesIn.AddRange(tentacles);
+        foreach (Animator anim in tentacles)
+        {
+            anim.SetBool(a_out, false);
+        }
+        StartCoroutine(TentacleCor());
+    }
+    IEnumerator TentacleCor()
+    {
+        for (; ; )
+        {
+            yield return new WaitForSeconds(tentacleTime);
+            RandomTentacleOut();
+        }
     }
 }

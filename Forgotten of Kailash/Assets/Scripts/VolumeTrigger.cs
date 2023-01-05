@@ -5,6 +5,7 @@ using UnityEngine;
 public class VolumeTrigger : MonoBehaviour
 {
     public UnityEngine.Events.UnityEvent onPlayerEnter;
+    public UnityEngine.Events.UnityEvent onPlayerExit;
     [SerializeField] bool moveRigidbodies;
     [SerializeField] Vector3 rbVector;
     
@@ -30,6 +31,16 @@ public class VolumeTrigger : MonoBehaviour
                 onPlayerEnter.Invoke();
                 break;
         }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("player exited " + name);
+            onPlayerExit.Invoke();
+        }
+        else
+            Debug.Log(other + " left the trigger " + name);
     }
 
     public void MovePlayerBy(float z)
