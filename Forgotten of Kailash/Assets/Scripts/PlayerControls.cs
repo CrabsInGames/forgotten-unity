@@ -71,6 +71,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HiddenButtons"",
+                    ""type"": ""Button"",
+                    ""id"": ""35e66e81-e22b-4dbe-b441-98a7e6e4343a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -183,6 +192,17 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""action"": ""Journal"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""74ea8190-6795-43a2-a9ad-bd1dfad2ea6b"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""HiddenButtons"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -196,6 +216,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Player_PickUp = m_Player.FindAction("PickUp", throwIfNotFound: true);
         m_Player_PauseMenu = m_Player.FindAction("PauseMenu", throwIfNotFound: true);
         m_Player_Journal = m_Player.FindAction("Journal", throwIfNotFound: true);
+        m_Player_HiddenButtons = m_Player.FindAction("HiddenButtons", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -260,6 +281,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_PickUp;
     private readonly InputAction m_Player_PauseMenu;
     private readonly InputAction m_Player_Journal;
+    private readonly InputAction m_Player_HiddenButtons;
     public struct PlayerActions
     {
         private @PlayerControls m_Wrapper;
@@ -269,6 +291,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @PickUp => m_Wrapper.m_Player_PickUp;
         public InputAction @PauseMenu => m_Wrapper.m_Player_PauseMenu;
         public InputAction @Journal => m_Wrapper.m_Player_Journal;
+        public InputAction @HiddenButtons => m_Wrapper.m_Player_HiddenButtons;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -293,6 +316,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Journal.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJournal;
                 @Journal.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJournal;
                 @Journal.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJournal;
+                @HiddenButtons.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHiddenButtons;
+                @HiddenButtons.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHiddenButtons;
+                @HiddenButtons.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnHiddenButtons;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -312,6 +338,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Journal.started += instance.OnJournal;
                 @Journal.performed += instance.OnJournal;
                 @Journal.canceled += instance.OnJournal;
+                @HiddenButtons.started += instance.OnHiddenButtons;
+                @HiddenButtons.performed += instance.OnHiddenButtons;
+                @HiddenButtons.canceled += instance.OnHiddenButtons;
             }
         }
     }
@@ -323,5 +352,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnPickUp(InputAction.CallbackContext context);
         void OnPauseMenu(InputAction.CallbackContext context);
         void OnJournal(InputAction.CallbackContext context);
+        void OnHiddenButtons(InputAction.CallbackContext context);
     }
 }

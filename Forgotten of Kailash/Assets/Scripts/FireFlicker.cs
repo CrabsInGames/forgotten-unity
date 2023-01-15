@@ -14,6 +14,9 @@ public class FireFlicker : MonoBehaviour
     private void Start()
     {
         startPos = transform.position;
+        from = transform.position;
+        to = transform.position;
+        t = 1;
     }
 
     private void Update()

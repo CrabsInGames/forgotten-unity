@@ -29,7 +29,31 @@ ModelImporter:
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
-    extraExposedTransformPaths: []
+    extraExposedTransformPaths:
+    - Beast_Armature/Tent_A.01/Tent_A.02/Tent_A.03/Tent_A.04
+    - Beast_Armature/Tent_A.01/Tent_A.02/Tent_A.03
+    - Beast_Armature/Tent_A.01/Tent_A.02
+    - Beast_Armature/Tent_H.01/Tent_H.02/Tent_H.03/Tent_H.04
+    - Beast_Armature/Tent_H.01/Tent_H.02/Tent_H.03
+    - Beast_Armature/Tent_H.01/Tent_H.02
+    - Beast_Armature/Tent_G.01/Tent_G.02/Tent_G.03/Tent_G.04
+    - Beast_Armature/Tent_G.01/Tent_G.02/Tent_G.03
+    - Beast_Armature/Tent_G.01/Tent_G.02
+    - Beast_Armature/Tent_F.01/Tent_F.02/Tent_F.03/Tent_F.04
+    - Beast_Armature/Tent_F.01/Tent_F.02/Tent_F.03
+    - Beast_Armature/Tent_F.01/Tent_F.02
+    - Beast_Armature/Tent_E.01/Tent_E.02/Tent_E.03/Tent_E.04
+    - Beast_Armature/Tent_E.01/Tent_E.02/Tent_E.03
+    - Beast_Armature/Tent_E.01/Tent_E.02
+    - Beast_Armature/Tent_D.01/Tent_D.02/Tent_D.03/Tent_D.04
+    - Beast_Armature/Tent_D.01/Tent_D.02/Tent_D.03
+    - Beast_Armature/Tent_D.01/Tent_D.02
+    - Beast_Armature/Tent_C.01/Tent_C.02/Tent_C.03/Tent_C.04
+    - Beast_Armature/Tent_C.01/Tent_C.02/Tent_C.03
+    - Beast_Armature/Tent_C.01/Tent_C.02
+    - Beast_Armature/Tent_B.01/Tent_B.02/Tent_B.03/Tent_B.04
+    - Beast_Armature/Tent_B.01/Tent_B.02/Tent_B.03
+    - Beast_Armature/Tent_B.01/Tent_B.02
     extraUserProperties: []
     clipAnimations: []
     isReadable: 0

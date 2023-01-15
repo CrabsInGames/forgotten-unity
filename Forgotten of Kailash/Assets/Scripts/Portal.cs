@@ -74,6 +74,7 @@ public class Portal : MonoBehaviour
             Debug.Log("time is over");
             StopCoroutine(TentacleCor());
             AllOut.Invoke();
+            return;
         }    
 
         int r = Random.Range(0, tentaclesIn.Count - 1);

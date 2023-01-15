@@ -41,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
         inputActions.Player.PickUp.canceled += ctx => EndHold(false);
         inputActions.Player.PauseMenu.started += ctx => OpenMenu();
         inputActions.Player.Journal.started += ctx => OpenJournal();
+        inputActions.Player.HiddenButtons.started += ctx => ShowButtons();
     }
     private void OnEnable()
     {
@@ -204,6 +205,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (MenuManager.active)
             MenuManager.active.OpenMenu(1);
+    }
+    void ShowButtons()
+    {
+        if (MenuManager.active)
+            MenuManager.active.ShowHideButtons();
     }
 
     private void OnDrawGizmos()
