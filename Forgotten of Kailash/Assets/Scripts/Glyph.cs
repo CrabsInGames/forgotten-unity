@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Glyph : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class Glyph : MonoBehaviour
     SpriteRenderer[] spriteRenderers;
     Color baseSpriteCol;
     [SerializeField] Color rightSpriteCol;
+    
+    public UnityEvent onRight;
 
     private void Start()
     {
@@ -39,6 +42,7 @@ public class Glyph : MonoBehaviour
         rend.material.color = rightCol;
         foreach (SpriteRenderer s in spriteRenderers)
             s.color = rightSpriteCol;
+        onRight.Invoke();
     }
     public void HighlightReset()
     {

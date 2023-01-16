@@ -9,6 +9,14 @@ public class Door : MonoBehaviour
     [SerializeField] Transform[] closed;
     [SerializeField] Transform[] open;
 
+    [SerializeField] AudioSource audioSource;
+
+    private void Start()
+    {
+        if (!audioSource)
+            audioSource = GetComponent<AudioSource>();
+    }
+
     public void Open()
     {
         Debug.Log("opening door " + name);
@@ -16,6 +24,8 @@ public class Door : MonoBehaviour
         {
             StartCoroutine(MoveDoorCor(wings[i].rotation, open[i].rotation, wings[i]));
         }
+        if (audioSource)
+            audioSource.Play();
     }
     public void Close()
     {
@@ -24,6 +34,8 @@ public class Door : MonoBehaviour
         {
             StartCoroutine(MoveDoorCor(wings[i].rotation, closed[i].rotation, wings[i]));
         }
+        if (audioSource)
+            audioSource.Play();
     }
 
     IEnumerator MoveDoorCor(Quaternion startRotation, Quaternion endRotation, Transform target)

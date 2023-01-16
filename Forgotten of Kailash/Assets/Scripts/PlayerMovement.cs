@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Vector2 lookSpeed;
     Vector2 walkInput { get => inputActions.Player.Walk.ReadValue<Vector2>(); }
     Vector2 lookInput { get => inputActions.Player.Look.ReadValue<Vector2>(); }
+    public Vector2 mouseMultiplier;
     
     [Header("First Person Camera")]
     [SerializeField] Camera FPCamera;
@@ -33,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("UI")]
     public GameObject grabUI;
+    
+    [SerializeField] AudioSource footsteps;
 
     private void Awake()
     {
@@ -60,6 +63,9 @@ public class PlayerMovement : MonoBehaviour
         if (!FPCamera)
             FPCamera = GetComponentInChildren<Camera>();
         VCamT = 0.5f;
+        if (!footsteps)
+            footsteps = GetComponent<AudioSource>();
+        footsteps.Play();
 
         pickupLayer = LayerMask.NameToLayer("PickUps");
         holdLayer = LayerMask.NameToLayer("Hold");
@@ -123,12 +129,12 @@ public class PlayerMovement : MonoBehaviour
     }
     void SideRotation()
     {
-        float rotate = lookInput.x * lookSpeed.x * Time.deltaTime;
+        float rotate = lookInput.x * lookSpeed.x * Time.deltaTime * mouseMultiplier.x;
         transform.Rotate(0, rotate, 0);
     }
     void CamVRotation()
     {
-        VCamT += lookInput.y * lookSpeed.y * Time.deltaTime;
+        VCamT += lookInput.y * lookSpeed.y * Time.deltaTime * mouseMultiplier.y;
         VCamT = Mathf.Clamp01(VCamT);
         FPCamera.transform.rotation = Quaternion.Lerp(cameraExtremes[0].rotation, cameraExtremes[1].rotation, VCamT);
     }
@@ -137,6 +143,10 @@ public class PlayerMovement : MonoBehaviour
         Vector3 walkLocal = new Vector3(walkInput.x, -transform.position.y, walkInput.y) * walkSpeed;
         Vector3 walkWorld = transform.TransformDirection(walkLocal);
         characterController.Move(walkWorld * Time.deltaTime);
+
+        float step = walkInput.sqrMagnitude;
+        footsteps.volume = Mathf.Clamp01(step);
+        Debug.Log("Footsteps volume is " + step);
     }
 
     void StartHold()
@@ -210,6 +220,27 @@ public class PlayerMovement : MonoBehaviour
     {
         if (MenuManager.active)
             MenuManager.active.ShowHideButtons();
+    }
+
+    public void SetMouseX(float x)
+    {
+        mouseMultiplier.x = x;
+    }
+    public void SetMouseY(float y)
+    {
+        mouseMultiplier.y = y;
+    }
+    public void SetInverseX(bool invert)
+    {
+        bool isInverted = (mouseMultiplier.x < 0);
+        if (isInverted != invert)
+            mouseMultiplier.x *= -1;
+    }
+    public void SetInverseY(bool invert)
+    {
+        bool isInverted = (mouseMultiplier.y < 0);
+        if (isInverted != invert)
+            mouseMultiplier.y *= -1;
     }
 
     private void OnDrawGizmos()

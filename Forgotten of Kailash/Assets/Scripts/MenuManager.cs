@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class MenuManager : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class MenuManager : MonoBehaviour
     [SerializeField] GameObject pauseUI;
 
     [Header("Sounds")]
+    [SerializeField] AudioMixer mixer;
     [SerializeField] AudioSource hoverSound;
     [SerializeField] AudioSource clickSound;
 
@@ -118,5 +120,18 @@ public class MenuManager : MonoBehaviour
     public void ButtonClick()
     {
         clickSound.Play();
+    }
+
+    public void SetMasterVolume(float volume)
+    {
+        mixer.SetFloat("MasterVolume", volume);
+    }
+    public void SetMusicVolume(float volume)
+    {
+        mixer.SetFloat("MusicVolume", volume);
+    }
+    public void SetSFXVolume(float volume)
+    {
+        mixer.SetFloat("SFXVolume", volume);
     }
 }

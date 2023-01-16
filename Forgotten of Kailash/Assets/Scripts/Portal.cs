@@ -19,6 +19,10 @@ public class Portal : MonoBehaviour
     List<Animator> tentaclesOut;
     int a_out = Animator.StringToHash("Out");
     public UnityEvent AllOut;
+    public UnityEvent Pillar1;
+    public UnityEvent Pillar2;
+    public UnityEvent Pillar3;
+    public UnityEvent Pillar4;
 
     void Start()
     {
@@ -26,8 +30,6 @@ public class Portal : MonoBehaviour
         tentaclesIn = new List<Animator>();
         tentaclesIn.AddRange(tentacles);
         tentaclesOut = new List<Animator>();
-        tentacleTime = puzzleTimeLimit / (tentacles.Length + 1);
-        Debug.Log("tentacles appear every " + tentacleTime + " seconds");
     }
 
     public void RaisePillar(int index)
@@ -36,9 +38,13 @@ public class Portal : MonoBehaviour
     }
     IEnumerator PillarCor(Transform pillar)
     {
+        AudioSource audioSource = pillar.GetComponent<AudioSource>();
+        if (audioSource && audioSource.clip)
+            audioSource.Play();
+
         float startY = pillar.position.y;
         float endY = 0;
-        float t = 0;
+        float t = 0;        
         while (t < 1)
         {
             t += Time.deltaTime / pillarRaiseTime;
@@ -52,6 +58,21 @@ public class Portal : MonoBehaviour
         vfx.gameObject.SetActive(true);
         activePillarCount++;
         UpdateRedness();
+        switch (activePillarCount)
+        {
+            case 1:
+                Pillar1.Invoke();
+                break;
+            case 2:
+                Pillar2.Invoke();
+                break;
+            case 3:
+                Pillar3.Invoke();
+                break;
+            case 4:
+                Pillar4.Invoke();
+                break;
+        }
     }
     void UpdateRedness()
     {
@@ -62,6 +83,12 @@ public class Portal : MonoBehaviour
         redVFX.transform.localScale = activePillarCount * Vector3.one;
     }
 
+    public void SetTime(float time)
+    {
+        puzzleTimeLimit = time;
+        tentacleTime = puzzleTimeLimit / tentacles.Length;
+        Debug.Log("time limit is now " + puzzleTimeLimit + ", tentacles will appear every " + tentacleTime + " seconds");
+    }
     public void StartCountdown()
     {
         Debug.Log("Countdown started");
@@ -109,7 +136,6 @@ public class Portal : MonoBehaviour
         {
             anim.SetBool(a_out, false);
         }
-        StartCoroutine(TentacleCor());
     }
     IEnumerator TentacleCor()
     {
