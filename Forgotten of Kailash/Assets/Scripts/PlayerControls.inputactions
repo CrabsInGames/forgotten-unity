@@ -49,15 +49,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "HiddenButtons",
-                    "type": "Button",
-                    "id": "35e66e81-e22b-4dbe-b441-98a7e6e4343a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -168,17 +159,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Journal",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "74ea8190-6795-43a2-a9ad-bd1dfad2ea6b",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "HiddenButtons",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
