@@ -1,12 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
     public static MenuManager active;
-    [SerializeField] List<GameObject> open = new List<GameObject>();
+    List<GameObject> open = new List<GameObject>();
     [SerializeField] public GameObject[] menus;
+    [SerializeField] GameObject[] hiddenButtons;
+    bool buttonVisibility;
+
+    [Header("Pause functionality")]
+    [SerializeField] bool pausesGame;
+    [SerializeField] GameObject pauseUI;
+
+    [Header("Sounds")]
+    [SerializeField] AudioSource hoverSound;
+    [SerializeField] AudioSource clickSound;
 
     private void Awake()
     {
@@ -16,13 +27,35 @@ public class MenuManager : MonoBehaviour
     {
         foreach (GameObject m in menus)
             m.SetActive(false);
+
+        CheckPause();
+
+        buttonVisibility = false;
+        foreach (GameObject button in hiddenButtons)
+            button.SetActive(buttonVisibility);
+    }
+
+    void CheckPause()
+    {
+        if (!pausesGame)
+        {
+            Time.timeScale = 1;
+            return;
+        }
+
+        bool isPaused = (open.Count != 0);
+        int scale = 1;
+        if (isPaused)
+            scale = 0;
+
+        Time.timeScale = scale;
+        pauseUI.SetActive(isPaused);
+
+        Debug.Log("timeScale is " + Time.timeScale);
     }
 
     public void OpenMenu(int index)
     {
-        if (open.Count == 0)
-            Time.timeScale = 0;
-
         if (index < 0 || index >= menus.Length)
         {
             Debug.Log("index " + index + " outside of range");
@@ -33,22 +66,22 @@ public class MenuManager : MonoBehaviour
         {
             menus[index].SetActive(false);
             open.Remove(menus[index]);
-            if (open.Count == 0)
-                Time.timeScale = 1;
         }
         else
         {
             menus[index].SetActive(true);
             open.Add(menus[index]);
         }
+
+        CheckPause();
     }
     public void CloseMenu()
     {
         GameObject currentMenu = open[open.Count - 1];
         currentMenu.SetActive(false);
         open.Remove(currentMenu);
-        if (open.Count == 0)
-            Time.timeScale = 1;
+
+        CheckPause();
     }
     public void CloseOrOpen()
     {
@@ -57,13 +90,33 @@ public class MenuManager : MonoBehaviour
         else
             OpenMenu(0);
     }
+    public void ShowHideButtons()
+    {
+        if (open.Count <= 0)
+            return;
+
+        buttonVisibility = !buttonVisibility;
+        foreach (GameObject button in hiddenButtons)
+            button.SetActive(buttonVisibility);
+    }
 
     public void ChangeScene(int index)
     {
+        Debug.Log("loading scene " + index);
+        SceneManager.LoadScene(index, LoadSceneMode.Single);
         //load scene by index
     }
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void ButtonHover()
+    {
+        hoverSound.Play();
+    }
+    public void ButtonClick()
+    {
+        clickSound.Play();
     }
 }
